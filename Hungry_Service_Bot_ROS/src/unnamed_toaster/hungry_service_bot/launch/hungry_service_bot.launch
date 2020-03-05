@@ -1,0 +1,36 @@
+<launch>
+
+  <!-- upload urdf -->
+  <param name="robot_description" textfile="$(find hungry_service_bot)/urdf/hungry_service_bot_description.urdf" />
+
+  <!-- robot state publisher -->
+  <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher" />
+
+  <!-- laser -->
+  <node name="rplidarNode" pkg="rplidar_ros" type="rplidarNode" output="screen">
+    <param name="serial_port" type="string" value="/dev/ttyUSB0"/>
+    <param name="serial_baudrate" type="int" value="115200"/>
+    <param name="frame_id" type="string" value="laser"/>
+    <param name="inverted" type="bool" value="false"/>
+    <param name="angle_compensate" type="bool" value="true"/>
+  </node>
+
+  <!-- Start ROS Network Table Adapter -->
+  <node name="ros_table_interface" pkg="hungry_service_bot_hw_interface" type="ros_table_interface.py" output="screen">
+    <!-- Never calibrated -->
+    <param name="ticks_meter" type="int" value="10000" />
+    <param name="base_width" value="0.625" />
+    <param name="ip" type="string" value="10.17.21.2" />
+  </node>
+
+  <!-- Start Limelight Network Table Adapter -->
+  <node name="default_table_interface" pkg="hungry_service_bot_hw_interface" type="default_table_interface.py" output="screen">
+    <param name="ip" type="string" value="10.17.21.2" />
+  </node>
+
+  <!-- Start game logic -->
+  <node name="match_logic" pkg="hungry_service_bot" type="match_logic.py" output="screen">
+    <param name="rate" type="int" value="50" />
+  </node>
+
+</launch>

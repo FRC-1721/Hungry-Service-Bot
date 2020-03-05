@@ -1,0 +1,35 @@
+<robot name="hungry_service_bot">
+
+  <material name="green">
+  <color rgba="0 1 0 1"/>
+  </material>
+
+  <material name="grey">
+  <color rgba="0.1 0.1 0.1 1"/>
+  </material>
+
+  <link name="base_link">
+    <visual>
+      <origin rpy="0 0 1.57" xyz="0 0 0.0508"/>
+      <geometry>
+        <mesh filename="package://hungry_service_bot/meshes/hungry_service_bot_frame.stl"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="base_link_to_laser" type="fixed">
+    <parent link="base_link"/>
+    <child link="laser"/>
+    <origin xyz="-0.193675 0.09525 0.2" rpy="3.14 0 3.14"/>
+  </joint>
+
+  <link name="laser">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.1016" radius="0.0508"/>
+      </geometry>
+    <material name="grey"/>
+    </visual>
+  </link>
+</robot>
