@@ -7,38 +7,51 @@
 
 package frc.robot.ros;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
+
 public class ROSControl extends CommandBase {
-  private Drivetrain drivetrain;
+  private final Drivetrain drivetrain;
+  private final ROS ros;
+
+  // NT
+  private static NetworkTable drivetrainCommandTable;
+  private static NetworkTableEntry drivetrainCommandStatus; // an entry to tell ros if any instance of rosshooter is running
+  
   /**
-   * Creates a new RosControl.
+   * Creates a new ROSControl.
+   * @author Joe
    */
-  public ROSControl(Drivetrain _drivetrain) {
+  public ROSControl(Drivetrain _drivetrain, ROS _ros) {
     addRequirements(_drivetrain);
+    addRequirements(_ros);
 
     drivetrain = _drivetrain;
+    ros = _ros;
+
+    // NT
+    drivetrainCommandTable = ROS.rosTable.getSubTable(Constants.RobotOperatingSystem.Names.DrivetrainTable);
+    drivetrainCommandStatus = drivetrainCommandTable.getEntry("running_somewhere");
   }
 
-  // Called when the command is initially scheduled.
+  // Called once when the command is initally schedueled
   @Override
   public void initialize() {
+    drivetrainCommandStatus.setBoolean(true); 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    drivetrain.FlyWithWiresB(ros.getStarboardSpeed(), ros.getPortSpeed()); // Operate the drivetrain with commands from ROS
   }
 
-  // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+  public void end(boolean interrupted){
+    drivetrainCommandStatus.setBoolean(false);
   }
 }

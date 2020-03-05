@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import frc.robot.ros.ROS;
 import frc.robot.ros.ROSControl;
 import frc.robot.subsystems.Drivetrain;
 
@@ -17,14 +18,18 @@ import frc.robot.subsystems.Drivetrain;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  // Subsystems
   private final Drivetrain drivetrain = new Drivetrain();
+  private final ROS ros = new ROS();
 
-  private final ROSControl roscontrol = new ROSControl(drivetrain);
+  // Commands
+  private final ROSControl roscontrol = new ROSControl(drivetrain, ros);
 
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    drivetrain.setDefaultCommand(roscontrol);
   }
 }
